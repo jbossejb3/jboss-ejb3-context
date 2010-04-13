@@ -97,7 +97,14 @@ public class BaseSessionContext extends BaseEJBContext
 
    public Class getInvokedBusinessInterface() throws IllegalStateException
    {
-      return getCurrentInvocationContext().getInvokedBusinessInterface();
+      final Class<?> businessInterface = getCurrentInvocationContext().getInvokedBusinessInterface();
+      if (businessInterface == null)
+      {
+         throw new IllegalStateException("Call to " + SessionContext.class.getName()
+               + ".getInvokedBusinessInterface() was made from outside an EJB3 Business Interface "
+               + "(possibly an EJB2.x Remote/Local?). " + "EJB 3.0 Specification 4.5.2.");
+      }
+      return businessInterface;
    }
 
    public SessionBeanManager getManager()
